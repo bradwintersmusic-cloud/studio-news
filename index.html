@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AET News — Belmont AET</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0b0b0f;
+      --surface:   #13131b;
+      --surface2:  #1b1b26;
+      --border:    #252533;
+      --accent:    #c8a86b;
+      --accent-bg: rgba(200,168,107,0.10);
+      --text:      #e6e2d9;
+      --muted:     #8f8e9d;
+      --blue:      #5b9cf6;
+      --green:     #4caf82;
+      --red:       #f87171;
+      --orange:    #fb923c;
+    }
+
+    /* Category color tokens */
+    --cat-news:         var(--accent);
+    --cat-announcement: var(--accent);
+    --cat-event:        var(--blue);
+    --cat-opportunity:  var(--green);
+    --cat-alert:        var(--orange);
+    --cat-emergency:    var(--red);
+    --cat-other:        var(--muted);
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      padding: 48px 28px 100px;
+      overflow-x: hidden;
+    }
+
+    @media (min-width: 1200px) { html { zoom: 1.085; } }
+
+    /* ── Animated background ── */
+    .hero-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .hero-orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.28; animation: drift 18s ease-in-out infinite alternate; }
+    .hero-orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, #c8a86b 0%, transparent 70%); top: -180px; left: -140px; animation-duration: 20s; }
+    .hero-orb-2 { width: 500px; height: 500px; background: radial-gradient(circle, #5b9cf6 0%, transparent 70%); top: 60px; right: -160px; animation-duration: 16s; animation-delay: -6s; opacity: 0.18; }
+    .hero-orb-3 { width: 400px; height: 400px; background: radial-gradient(circle, #c8a86b 0%, transparent 70%); bottom: 20%; left: 30%; animation-duration: 24s; animation-delay: -10s; opacity: 0.12; }
+    @keyframes drift { 0%{transform:translate(0,0) scale(1);} 33%{transform:translate(30px,-20px) scale(1.05);} 66%{transform:translate(-20px,30px) scale(0.97);} 100%{transform:translate(15px,10px) scale(1.03);} }
+
+    /* ── Header ── */
+    .page-header {
+      max-width: 920px;
+      margin: 0 auto 36px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 1;
+    }
+
+    .wordmark { font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+
+    .header-title-row { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+
+    h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.025em; color: var(--text); }
+
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 0 3px rgba(248,113,113,0.25);
+      animation: pulse-dot 1.8s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse-dot {
+      0%,100% { box-shadow: 0 0 0 3px rgba(248,113,113,0.25); }
+      50%      { box-shadow: 0 0 0 6px rgba(248,113,113,0.08); }
+    }
+
+    .meta { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 22px; }
+
+    /* ── Controls ── */
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+    .search-wrap { position: relative; flex: 1; min-width: 180px; max-width: 260px; }
+    .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 13px; height: 13px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
+    .search-input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; padding: 6px 10px 6px 30px; outline: none; transition: border-color 0.15s; }
+    .search-input::placeholder { color: var(--muted); }
+    .search-input:focus { border-color: var(--accent); }
+
+    .filter-select { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 28px 6px 10px; outline: none; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238f8e9d' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 9px center; transition: border-color 0.15s, color 0.15s; }
+    .filter-select:focus, .filter-select.active { border-color: var(--accent); color: var(--accent); }
+    .filter-select option { background: var(--surface2); color: var(--text); text-transform: none; letter-spacing: 0; }
+
+    .view-toggle { display: flex; gap: 4px; }
+    .view-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--muted); cursor: pointer; padding: 5px 8px; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s, color 0.15s, background 0.15s; }
+    .view-btn svg { width: 14px; height: 14px; fill: currentColor; }
+    .view-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+    .view-btn:hover:not(.active) { border-color: var(--muted); color: var(--text); }
+
+    .clear-btn { background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 12px; cursor: pointer; transition: border-color 0.15s, color 0.15s; display: none; }
+    .clear-btn.visible { display: block; }
+    .clear-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .result-count { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); margin-left: auto; white-space: nowrap; }
+
+    /* ── Content ── */
+    .content { max-width: 920px; margin: 0 auto; position: relative; z-index: 1; }
+
+    /* ════════════════════════════════════════
+       EMERGENCY BANNER
+    ════════════════════════════════════════ */
+    .emergency-banner {
+      display: none;
+      margin-bottom: 28px;
+      border: 1.5px solid rgba(248,113,113,0.5);
+      border-radius: 8px;
+      background: rgba(248,113,113,0.06);
+      overflow: hidden;
+      animation: emergency-glow 2.5s ease-in-out infinite alternate;
+    }
+
+    .emergency-banner.active { display: block; }
+
+    @keyframes emergency-glow {
+      0%   { box-shadow: 0 0 20px rgba(248,113,113,0.15), 0 0 60px rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.4); }
+      100% { box-shadow: 0 0 35px rgba(248,113,113,0.30), 0 0 80px rgba(248,113,113,0.12); border-color: rgba(248,113,113,0.7); }
+    }
+
+    .emergency-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      background: rgba(248,113,113,0.12);
+      border-bottom: 1px solid rgba(248,113,113,0.2);
+    }
+
+    .emergency-icon {
+      font-size: 14px;
+      animation: pulse-dot 1.2s ease-in-out infinite;
+    }
+
+    .emergency-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--red);
+    }
+
+    .emergency-posts { display: flex; flex-direction: column; gap: 0; }
+
+    .emergency-post {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(248,113,113,0.15);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+
+    .emergency-post:last-child { border-bottom: none; }
+    .emergency-post:hover { background: rgba(248,113,113,0.06); }
+
+    .emergency-post-headline {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--red);
+      margin-bottom: 4px;
+    }
+
+    .emergency-post-summary {
+      font-size: 12px;
+      color: var(--text);
+      opacity: 0.85;
+    }
+
+    .emergency-post-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* ════════════════════════════════════════
+       CAROUSEL
+    ════════════════════════════════════════ */
+    .carousel-wrap {
+      position: relative;
+      margin-bottom: 36px;
+    }
+
+    .carousel-track-outer {
+      overflow: hidden;
+      border-radius: 8px;
+      touch-action: pan-y;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
+    }
+
+    .carousel-slide {
+      flex: 0 0 100%;
+      min-width: 100%;
+    }
+
+    /* Carousel card */
+    .carousel-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      display: flex;
+      flex-direction: column;
+      min-height: 200px;
+      position: relative;
+    }
+
+    .carousel-card:hover { border-color: var(--accent); }
+
+    .carousel-card-thumb {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+      background: var(--surface2);
+    }
+
+    .carousel-card-body { padding: 18px 20px 20px; flex: 1; }
+
+    .carousel-card-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .carousel-card-headline {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .carousel-card-summary {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .carousel-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .carousel-card-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    /* Carousel controls */
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      background: rgba(11,11,15,0.75);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+
+    .carousel-btn:hover { background: rgba(11,11,15,0.92); border-color: var(--accent); color: var(--accent); }
+    .carousel-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .carousel-btn-prev { left: -14px; }
+    .carousel-btn-next { right: -14px; }
+
+    /* Dots */
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .carousel-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+    }
+
+    .carousel-dot.active { background: var(--accent); transform: scale(1.3); }
+
+    /* Progress bar */
+    .carousel-progress {
+      height: 2px;
+      background: var(--border);
+      border-radius: 1px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .carousel-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 1px;
+      transition: width 0.1s linear;
+      width: 0%;
+    }
+
+    /* ════════════════════════════════════════
+       SECTION HEADINGS
+    ════════════════════════════════════════ */
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .section-heading .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+    /* ════════════════════════════════════════
+       CATEGORY BADGES
+    ════════════════════════════════════════ */
+    .cat-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 3px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .cat-news, .cat-announcement { background: var(--accent-bg); color: var(--accent); border: 1px solid rgba(200,168,107,0.3); }
+    .cat-event       { background: rgba(91,156,246,0.12); color: var(--blue);   border: 1px solid rgba(91,156,246,0.3); }
+    .cat-opportunity { background: rgba(76,175,130,0.12); color: var(--green);  border: 1px solid rgba(76,175,130,0.3); }
+    .cat-alert       { background: rgba(251,146,60,0.12); color: var(--orange); border: 1px solid rgba(251,146,60,0.3); }
+    .cat-emergency   { background: rgba(248,113,113,0.12); color: var(--red);   border: 1px solid rgba(248,113,113,0.3); }
+    .cat-other       { background: rgba(143,142,157,0.12); color: var(--muted); border: 1px solid var(--border); }
+
+    .priority-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--orange);
+      background: rgba(251,146,60,0.1);
+      border: 1px solid rgba(251,146,60,0.25);
+      border-radius: 3px;
+      padding: 2px 6px;
+    }
+
+    /* ════════════════════════════════════════
+       LIST VIEW
+    ════════════════════════════════════════ */
+    .post-list { display: flex; flex-direction: column; gap: 2px; }
+
+    .post-list-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 13px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      position: relative;
+    }
+
+    .post-list-item:hover { border-color: var(--accent); background: var(--surface2); }
+
+    .post-list-thumb {
+      width: 56px;
+      height: 56px;
+      border-radius: 4px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+    }
+
+    .post-list-body { flex: 1; min-width: 0; }
+
+    .post-list-eyebrow { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; flex-wrap: wrap; }
+
+    .post-list-headline { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; line-height: 1.35; }
+
+    .post-list-summary { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    .post-list-meta { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); opacity: 0.6; margin-top: 5px; }
+
+    .more-link { color: var(--accent); font-size: 12px; cursor: pointer; white-space: nowrap; }
+    .more-link:hover { text-decoration: underline; }
+
+    .list-arrow { color: var(--muted); font-size: 16px; flex-shrink: 0; align-self: center; transition: color 0.12s; }
+    .post-list-item:hover .list-arrow { color: var(--accent); }
+
+    /* ════════════════════════════════════════
+       GRID VIEW
+    ════════════════════════════════════════ */
+    .post-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+    .post-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, transform 0.15s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .post-card:hover { border-color: var(--accent); background: var(--surface2); transform: translateY(-2px); }
+
+    .post-card-thumb { width: 100%; height: 100px; object-fit: cover; display: block; background: var(--surface2); }
+
+    .post-card-body { padding: 12px 14px 14px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+
+    .post-card-eyebrow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+    .post-card-headline { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.35; }
+
+    .post-card-summary { font-size: 12px; color: var(--muted); line-height: 1.5; flex: 1; }
+
+    .post-card-meta { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); opacity: 0.6; margin-top: auto; }
+
+    /* Category left-border accent on cards */
+    .post-card.cat-event   { border-left: 2px solid var(--blue); }
+    .post-card.cat-opportunity { border-left: 2px solid var(--green); }
+    .post-card.cat-alert   { border-left: 2px solid var(--orange); }
+    .post-card.cat-news, .post-card.cat-announcement { border-left: 2px solid var(--accent); }
+
+    /* ════════════════════════════════════════
+       ARCHIVE SECTION
+    ════════════════════════════════════════ */
+    .archive-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: border-color 0.15s, color 0.15s;
+      margin-top: 32px;
+      user-select: none;
+    }
+
+    .archive-toggle:hover { border-color: var(--muted); color: var(--text); }
+
+    .archive-toggle-icon {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .archive-toggle.open .archive-toggle-icon { transform: rotate(90deg); }
+
+    .archive-count {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 10px;
+      padding: 1px 8px;
+      margin-left: auto;
+    }
+
+    .archive-list { display: none; margin-top: 8px; flex-direction: column; gap: 2px; }
+    .archive-list.open { display: flex; }
+
+    .archive-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.15s, border-color 0.15s;
+    }
+
+    .archive-item:hover { opacity: 0.85; border-color: var(--muted); }
+
+    .archive-item-headline { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
+    .archive-item-date { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; }
+
+    /* ════════════════════════════════════════
+       MODAL
+    ════════════════════════════════════════ */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(11,11,15,0.88);
+      z-index: 100;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 20px 60px;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      width: 100%;
+      max-width: 640px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+      margin: auto;
+    }
+
+    .modal-thumb { width: 100%; max-height: 260px; object-fit: cover; display: block; }
+
+    .modal-header {
+      padding: 20px 22px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+
+    .modal-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+
+    .modal-headline { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; line-height: 1.25; }
+
+    .modal-close {
+      float: right;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      padding: 4px 8px;
+      margin-left: 12px;
+      transition: border-color 0.12s, color 0.12s;
+    }
+
+    .modal-close:hover { border-color: var(--muted); color: var(--text); }
+
+    .modal-event-info {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 12px 22px;
+      background: rgba(91,156,246,0.06);
+      border-bottom: 1px solid rgba(91,156,246,0.15);
+    }
+
+    .modal-event-field { display: flex; flex-direction: column; gap: 2px; }
+
+    .modal-event-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--blue); }
+
+    .modal-event-value { font-size: 13px; color: var(--text); font-weight: 500; }
+
+    .modal-body { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 14px; }
+
+    .modal-summary { font-size: 14px; color: var(--text); line-height: 1.7; }
+
+    .modal-divider { height: 1px; background: var(--border); }
+
+    .modal-body-text { font-size: 13px; color: var(--muted); line-height: 1.75; }
+
+    .modal-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      padding: 14px 22px;
+      border-top: 1px solid var(--border);
+      background: var(--surface2);
+    }
+
+    .modal-meta-row { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); flex: 1; min-width: 0; }
+
+    .modal-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--accent);
+      color: #0b0b0f;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 9px 16px;
+      border-radius: 4px;
+      transition: opacity 0.15s;
+      flex-shrink: 0;
+    }
+
+    .modal-cta-btn:hover { opacity: 0.85; }
+    .modal-cta-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+
+    .modal-contact { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--blue); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+    .modal-contact:hover { text-decoration: underline; }
+
+    /* ── Load / empty states ── */
+    .load-state { text-align: center; padding: 60px 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); position: relative; z-index: 1; }
+    .empty-state { display: none; text-align: center; padding: 40px 0; color: var(--muted); font-style: italic; font-size: 13px; }
+
+    /* ── Floating nav ── */
+    .belmont-nav { position: fixed; z-index: 200; top: 24px; left: 24px; }
+    @media (max-width: 560px) { .belmont-nav { top: auto; left: auto; bottom: 20px; right: 20px; } }
+    .belmont-nav-toggle { width: 38px; height: 38px; background: var(--surface); border: 1.5px solid var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.15s; box-shadow: 0 4px 14px rgba(0,0,0,0.35); }
+    .belmont-nav-toggle:hover { background: var(--surface2); }
+    .belmont-nav-toggle svg { width: 16px; height: 16px; }
+    .belmont-nav-toggle svg rect { fill: var(--accent); }
+    .belmont-nav-menu { position: absolute; top: 46px; left: 0; min-width: 196px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; box-shadow: 0 16px 44px rgba(0,0,0,0.5); opacity: 0; transform: translateY(-6px); pointer-events: none; transition: opacity 0.15s ease, transform 0.15s ease; }
+    @media (max-width: 560px) { .belmont-nav-menu { top: auto; bottom: 46px; left: auto; right: 0; transform: translateY(6px); } }
+    .belmont-nav.open .belmont-nav-menu { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .belmont-nav-link { display: flex; align-items: center; gap: 11px; padding: 11px 14px; text-decoration: none; border-bottom: 1px solid var(--border); transition: background 0.12s; }
+    .belmont-nav-link:last-child { border-bottom: none; }
+    .belmont-nav-link:hover { background: var(--surface2); }
+    .belmont-nav-link-icon { width: 28px; height: 28px; border-radius: 5px; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--accent); }
+    .belmont-nav-link-icon svg { width: 15px; height: 15px; }
+    .belmont-nav-link-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); }
+    .belmont-nav-link.is-current .belmont-nav-link-icon { color: var(--blue); border-color: var(--blue); box-shadow: 0 0 0 3px rgba(91,156,246,0.18), 0 0 14px rgba(91,156,246,0.35); }
+    .belmont-nav-link.is-current .belmont-nav-link-label { color: var(--blue); }
+
+    @media (max-width: 700px) {
+      .post-grid { grid-template-columns: repeat(2,1fr); }
+      body { padding: 32px 16px 80px; }
+      .result-count { margin-left: 0; width: 100%; }
+      .carousel-btn { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .post-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+  </div>
+
+  <div class="belmont-nav" id="belmontNav" data-current="news">
+    <button class="belmont-nav-toggle" id="belmontNavToggle" aria-label="Open navigation" aria-expanded="false">
+      <svg viewBox="0 0 16 16"><rect x="2" y="4" width="12" height="1.6" rx="0.8"/><rect x="2" y="7.2" width="12" height="1.6" rx="0.8"/><rect x="2" y="10.4" width="12" height="1.6" rx="0.8"/></svg>
+    </button>
+    <nav class="belmont-nav-menu">
+      <a class="belmont-nav-link" data-page="home" href="https://bradwintersmusic-cloud.github.io/studio-home/">
+        <span class="belmont-nav-link-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21V12h6v9"/></svg></span>
+        <span class="belmont-nav-link-label">Studio Hub</span>
+      </a>
+      <a class="belmont-nav-link" data-page="news" href="https://bradwintersmusic-cloud.github.io/studio-news/">
+        <span class="belmont-nav-link-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg></span>
+        <span class="belmont-nav-link-label">AET News</span>
+      </a>
+      <a class="belmont-nav-link" data-page="schedule" href="https://bradwintersmusic-cloud.github.io/studioassistant-sync/">
+        <span class="belmont-nav-link-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M2 4h20v18H2zm5-3v3m10-3v3M2 8h20M5 12.5h3m-3 5h3m2.5-5h3m2.5 0h3m-8.5 5h3"/></svg></span>
+        <span class="belmont-nav-link-label">Studio Schedule</span>
+      </a>
+      <a class="belmont-nav-link" data-page="videos" href="https://bradwintersmusic-cloud.github.io/studio-videos/">
+        <span class="belmont-nav-link-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"><path d="M3.5 5.5h-3v18h18v-3"/><path d="M22.5 1.5h-19v19h19z"/><path d="M10.5 7v8l7-4z"/></g></svg></span>
+        <span class="belmont-nav-link-label">Video Library</span>
+      </a>
+      <a class="belmont-nav-link" data-page="policies" href="https://bradwintersmusic-cloud.github.io/studio-policies/">
+        <span class="belmont-nav-link-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m2.3 20.28l9.6-9.6l-1.4-1.42l-.72.71a.996.996 0 0 1-1.41 0l-.71-.71a.996.996 0 0 1 0-1.41l5.66-5.66a.996.996 0 0 1 1.41 0l.71.71c.39.39.39 1.02 0 1.41l-.71.69l1.42 1.43a.996.996 0 0 1 1.41 0c.39.39.39 1.03 0 1.42l1.41 1.41l.71-.71c.39-.39 1.03-.39 1.42 0l.7.71c.39.39.39 1.03 0 1.42l-5.65 5.65c-.39.39-1.03.39-1.42 0l-.7-.7a.99.99 0 0 1 0-1.42l.7-.71l-1.41-1.41l-9.61 9.61a.996.996 0 0 1-1.41 0c-.39-.39-.39-1.03 0-1.42M20 19a2 2 0 0 1 2 2v1H12v-1a2 2 0 0 1 2-2z"/></svg></span>
+        <span class="belmont-nav-link-label">Policies</span>
+      </a>
+      <a class="belmont-nav-link" data-page="tools" href="https://bradwintersmusic-cloud.github.io/studio-tools/">
+        <span class="belmont-nav-link-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
+        <span class="belmont-nav-link-label">Studio Tools</span>
+      </a>
+      <a class="belmont-nav-link" data-page="musicians" href="https://bradwintersmusic-cloud.github.io/studio-musicians/">
+        <span class="belmont-nav-link-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m42.31 13.38l-25.1 3.48V7.98l25.1-3.48zm0 0v17.15m-25.1-13.67v20.88"/><circle cx="11.45" cy="37.74" r="5.76"/><circle cx="36.55" cy="30.53" r="5.76"/></svg></span>
+        <span class="belmont-nav-link-label">Session Musicians</span>
+      </a>
+      <a class="belmont-nav-link" data-page="resources" href="https://bradwintersmusic-cloud.github.io/studio-resources/">
+        <span class="belmont-nav-link-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
+        <span class="belmont-nav-link-label">Resources</span>
+      </a>
+    </nav>
+  </div>
+
+  <header class="page-header">
+    <div class="wordmark">Belmont University &middot; AET</div>
+    <div class="header-title-row">
+      <div class="live-dot"></div>
+      <h1>AET News</h1>
+    </div>
+    <div class="meta">Announcements, events, and updates from the AET program</div>
+
+    <div class="controls">
+      <div class="search-wrap">
+        <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="4.5"/><line x1="10.5" y1="10.5" x2="14" y2="14"/></svg>
+        <input class="search-input" id="searchInput" type="text" placeholder="Search posts...">
+      </div>
+
+      <select class="filter-select" id="categoryFilter">
+        <option value="">All Categories</option>
+        <option value="News">News</option>
+        <option value="Announcement">Announcement</option>
+        <option value="Event">Event</option>
+        <option value="Opportunity">Opportunity</option>
+        <option value="Alert">Alert</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <select class="filter-select" id="sortSelect">
+        <option value="recent">Most Recent</option>
+        <option value="expiring">Expiring Soon</option>
+      </select>
+
+      <div class="view-toggle">
+        <button class="view-btn active" id="btnList" title="List view">
+          <svg viewBox="0 0 14 14"><rect x="0" y="1" width="14" height="2" rx="1"/><rect x="0" y="6" width="14" height="2" rx="1"/><rect x="0" y="11" width="14" height="2" rx="1"/></svg>
+        </button>
+        <button class="view-btn" id="btnGrid" title="Grid view">
+          <svg viewBox="0 0 14 14"><rect x="0" y="0" width="6" height="6" rx="1"/><rect x="8" y="0" width="6" height="6" rx="1"/><rect x="0" y="8" width="6" height="6" rx="1"/><rect x="8" y="8" width="6" height="6" rx="1"/></svg>
+        </button>
+      </div>
+
+      <button class="clear-btn" id="clearBtn">Clear</button>
+      <span class="result-count" id="resultCount"></span>
+    </div>
+  </header>
+
+  <div class="load-state" id="loadState">Loading...</div>
+
+  <main class="content" id="mainContent" style="display:none;">
+
+    <!-- Emergency Banner -->
+    <div class="emergency-banner" id="emergencyBanner">
+      <div class="emergency-header">
+        <span class="emergency-icon">&#9888;</span>
+        <span class="emergency-label">Emergency Alert</span>
+      </div>
+      <div class="emergency-posts" id="emergencyPosts"></div>
+    </div>
+
+    <!-- Carousel -->
+    <div class="carousel-wrap" id="carouselWrap" style="display:none;">
+      <div class="section-heading"><div class="dot"></div>Pinned</div>
+      <div class="carousel-track-outer" id="carouselOuter">
+        <div class="carousel-track" id="carouselTrack"></div>
+      </div>
+      <button class="carousel-btn carousel-btn-prev" id="carouselPrev">
+        <svg viewBox="0 0 16 16"><polyline points="10,4 6,8 10,12"/></svg>
+      </button>
+      <button class="carousel-btn carousel-btn-next" id="carouselNext">
+        <svg viewBox="0 0 16 16"><polyline points="6,4 10,8 6,12"/></svg>
+      </button>
+      <div class="carousel-dots" id="carouselDots"></div>
+      <div class="carousel-progress"><div class="carousel-progress-fill" id="carouselProgressFill"></div></div>
+    </div>
+
+    <!-- Feed -->
+    <div class="section-heading" id="feedHeading"><div class="dot"></div>Latest</div>
+    <div class="empty-state" id="emptyState">No posts match your filters.</div>
+    <div class="post-list" id="postList"></div>
+    <div class="post-grid" id="postGrid"></div>
+
+    <!-- Archive -->
+    <div class="archive-toggle" id="archiveToggle" style="display:none;">
+      <svg class="archive-toggle-icon" viewBox="0 0 16 16"><polyline points="6,4 10,8 6,12"/></svg>
+      Archive
+      <span class="archive-count" id="archiveCount">0</span>
+    </div>
+    <div class="archive-list" id="archiveList"></div>
+
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <img class="modal-thumb" id="modalThumb" src="" alt="" style="display:none;">
+      <div class="modal-header">
+        <button class="modal-close" id="modalClose">&#x2715;</button>
+        <div class="modal-eyebrow" id="modalEyebrow"></div>
+        <div class="modal-headline" id="modalHeadline"></div>
+      </div>
+      <div class="modal-event-info" id="modalEventInfo" style="display:none;"></div>
+      <div class="modal-body">
+        <div class="modal-summary" id="modalSummary"></div>
+        <div class="modal-divider" id="modalBodyDivider" style="display:none;"></div>
+        <div class="modal-body-text" id="modalBodyText" style="display:none;"></div>
+      </div>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <script>
+    // ══════════════════════════════════════════════════════════════
+    // CONFIGURATION
+    // ══════════════════════════════════════════════════════════════
+    var SHEET_CSV_URL  = "YOUR_GOOGLE_SHEET_CSV_URL_HERE";
+    var TALLY_FORM_URL = "YOUR_TALLY_FORM_URL_HERE";
+    var TRUNCATE_CHARS = 200;
+    var CAROUSEL_INTERVAL_MS = 3500;
+
+    // ── STATE ─────────────────────────────────────────────────────
+    var allPosts      = [];
+    var archivedPosts = [];
+    var currentView   = "list";
+    var activeSearch  = "";
+    var activeCategory= "";
+    var activeSort    = "recent";
+
+    // ── ELEMENTS ──────────────────────────────────────────────────
+    var mainContent   = document.getElementById("mainContent");
+    var loadState     = document.getElementById("loadState");
+    var postList      = document.getElementById("postList");
+    var postGrid      = document.getElementById("postGrid");
+    var emptyState    = document.getElementById("emptyState");
+    var resultCount   = document.getElementById("resultCount");
+    var clearBtn      = document.getElementById("clearBtn");
+    var archiveToggle = document.getElementById("archiveToggle");
+    var archiveList   = document.getElementById("archiveList");
+    var archiveCount  = document.getElementById("archiveCount");
+
+    // ── CSV PARSER ────────────────────────────────────────────────
+    function parseCSV(text) {
+      var rows=[], lines=text.split("\n");
+      for (var i=0;i<lines.length;i++) {
+        var line=lines[i].trim(); if(!line){continue;}
+        var row=[], inQ=false, cell="";
+        for (var c=0;c<line.length;c++) {
+          var ch=line[c];
+          if(ch==='"'){if(inQ&&line[c+1]==='"'){cell+='"';c++;}else{inQ=!inQ;}}
+          else if(ch===','&&!inQ){row.push(cell.trim());cell="";}
+          else{cell+=ch;}
+        }
+        row.push(cell.trim()); rows.push(row);
+      }
+      return rows;
+    }
+
+    function csvToObjects(rows) {
+      if(rows.length<2){return [];}
+      var headers=rows[0], result=[];
+      for(var i=1;i<rows.length;i++){var obj={};for(var j=0;j<headers.length;j++){obj[headers[j]]=rows[i][j]||"";}result.push(obj);}
+      return result;
+    }
+
+    // ── DATE HELPERS ──────────────────────────────────────────────
+    function parseDate(str) { if(!str){return null;} var d=new Date(str); return isNaN(d.getTime())?null:d; }
+
+    function formatDate(str) {
+      var d=parseDate(str); if(!d){return "";}
+      return d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+    }
+
+    function isExpired(expirationStr) {
+      var exp=parseDate(expirationStr); if(!exp){return false;}
+      var now=new Date(); now.setHours(0,0,0,0);
+      return exp < now;
+    }
+
+    function daysUntilExpiry(expirationStr) {
+      var exp=parseDate(expirationStr); if(!exp){return null;}
+      var now=new Date(); now.setHours(0,0,0,0);
+      return Math.ceil((exp-now)/(1000*60*60*24));
+    }
+
+    // ── CATEGORY BADGE ────────────────────────────────────────────
+    function catClass(cat) {
+      var map={"News":"cat-news","Announcement":"cat-announcement","Event":"cat-event","Opportunity":"cat-opportunity","Alert":"cat-alert","Emergency":"cat-emergency","Other":"cat-other"};
+      return map[cat] || "cat-other";
+    }
+
+    function catBadgeHtml(cat) {
+      return '<span class="cat-badge ' + catClass(cat) + '">' + cat + '</span>';
+    }
+
+    // ── TRUNCATE ──────────────────────────────────────────────────
+    function truncate(text, limit) {
+      if(!text){return "";}
+      if(text.length<=limit){return text;}
+      return text.slice(0,limit).trimEnd();
+    }
+
+    // ── LOAD DATA ─────────────────────────────────────────────────
+    fetch(SHEET_CSV_URL + "&t=" + Date.now())
+      .then(function(res){if(!res.ok){throw new Error("HTTP "+res.status);}return res.text();})
+      .then(function(text){
+        var rows=parseCSV(text), objects=csvToObjects(rows);
+        allPosts=[]; archivedPosts=[];
+
+        for(var i=0;i<objects.length;i++){
+          var r=objects[i];
+          if((r["Status"]||"").trim().toLowerCase()!=="published"){continue;}
+          if(r["Category"]==="Emergency"){continue;} // handled separately
+          if(isExpired(r["Expiration Date"])){archivedPosts.push(r);}
+          else{allPosts.push(r);}
+        }
+
+        // Emergency posts — active (non-expired, published)
+        var emergencies=[];
+        for(var i=0;i<objects.length;i++){
+          var r=objects[i];
+          if((r["Status"]||"").trim().toLowerCase()!=="published"){continue;}
+          if(r["Category"]==="Emergency"&&!isExpired(r["Expiration Date"])){emergencies.push(r);}
+        }
+
+        renderEmergency(emergencies);
+        renderCarousel();
+        render();
+        renderArchive();
+
+        loadState.style.display="none";
+        mainContent.style.display="block";
+      })
+      .catch(function(err){loadState.textContent="Could not load posts. ("+err.message+")";});
+
+    // ── EMERGENCY ─────────────────────────────────────────────────
+    function renderEmergency(posts) {
+      var banner=document.getElementById("emergencyBanner");
+      var container=document.getElementById("emergencyPosts");
+      if(!posts.length){banner.classList.remove("active");return;}
+      banner.classList.add("active");
+      container.innerHTML="";
+      for(var i=0;i<posts.length;i++){
+        var p=posts[i];
+        var el=document.createElement("div");
+        el.className="emergency-post";
+        var summary=truncate(p["Summary"],TRUNCATE_CHARS);
+        el.innerHTML='<div class="emergency-post-headline">'+p["Headline"]+'</div><div class="emergency-post-summary">'+summary+'</div><div class="emergency-post-meta">Posted by '+p["Posted By"]+" &middot; Expires "+formatDate(p["Expiration Date"])+'</div>';
+        el.addEventListener("click",function(post){return function(){openModal(post);};}(p));
+        container.appendChild(el);
+      }
+    }
+
+    // ── CAROUSEL ──────────────────────────────────────────────────
+    var carouselIndex=0, carouselTimer=null, carouselDragStartX=0, carouselDragging=false;
+    var carouselProgressStart=0, carouselProgressFrame=null;
+
+    function getPinnedPosts() {
+      return allPosts.filter(function(p){return (p["Pinned"]||"").toUpperCase()==="TRUE";});
+    }
+
+    function renderCarousel() {
+      var pinned=getPinnedPosts();
+      var wrap=document.getElementById("carouselWrap");
+      if(!pinned.length){wrap.style.display="none";return;}
+      wrap.style.display="block";
+      var track=document.getElementById("carouselTrack");
+      var dotsEl=document.getElementById("carouselDots");
+      track.innerHTML=""; dotsEl.innerHTML="";
+
+      for(var i=0;i<pinned.length;i++){
+        var slide=document.createElement("div");
+        slide.className="carousel-slide";
+        slide.appendChild(buildCarouselCard(pinned[i]));
+        track.appendChild(slide);
+        var dot=document.createElement("div");
+        dot.className="carousel-dot"+(i===0?" active":"");
+        dot.setAttribute("data-index",i);
+        dot.addEventListener("click",function(idx){return function(){goToSlide(idx);resetCarouselTimer();};}(i));
+        dotsEl.appendChild(dot);
+      }
+
+      goToSlide(0);
+      startCarouselTimer();
+      wireCarouselSwipe();
+
+      document.getElementById("carouselPrev").addEventListener("click",function(){
+        var pinned=getPinnedPosts();
+        goToSlide((carouselIndex-1+pinned.length)%pinned.length);
+        resetCarouselTimer();
+      });
+      document.getElementById("carouselNext").addEventListener("click",function(){
+        var pinned=getPinnedPosts();
+        goToSlide((carouselIndex+1)%pinned.length);
+        resetCarouselTimer();
+      });
+    }
+
+    function buildCarouselCard(p) {
+      var card=document.createElement("div");
+      card.className="carousel-card";
+      var hasThumb=p["Thumbnail URL"]&&p["Thumbnail URL"].trim();
+      var eyebrow=catBadgeHtml(p["Category"]);
+      if((p["Priority"]||"").toLowerCase()==="high"){eyebrow+=' <span class="priority-badge">High Priority</span>';}
+      var days=daysUntilExpiry(p["Expiration Date"]);
+      var expiryNote=days!==null&&days<=3?'<span style="color:var(--orange);font-family:IBM Plex Mono,monospace;font-size:10px;">Expires in '+days+' day'+(days===1?"":"s")+'</span>':"";
+
+      card.innerHTML=(hasThumb?'<img class="carousel-card-thumb" src="'+p["Thumbnail URL"]+'" alt="'+(p["Image Alt Text"]||p["Headline"])+'" loading="lazy">':'')+
+        '<div class="carousel-card-body">'+
+          '<div class="carousel-card-eyebrow">'+eyebrow+'</div>'+
+          '<div class="carousel-card-headline">'+p["Headline"]+'</div>'+
+          '<div class="carousel-card-summary">'+truncate(p["Summary"],TRUNCATE_CHARS)+'</div>'+
+          '<div class="carousel-card-footer">'+
+            '<span class="carousel-card-meta">'+p["Posted By"]+" &middot; "+formatDate(p["Submission Date"])+'</span>'+
+            expiryNote+
+          '</div>'+
+        '</div>';
+
+      card.addEventListener("click",function(post){return function(){openModal(post);};}(p));
+      return card;
+    }
+
+    function goToSlide(idx) {
+      carouselIndex=idx;
+      var track=document.getElementById("carouselTrack");
+      track.style.transform="translateX(-"+idx*100+"%)";
+      var dots=document.querySelectorAll(".carousel-dot");
+      for(var i=0;i<dots.length;i++){dots[i].classList.toggle("active",i===idx);}
+      startProgressBar();
+    }
+
+    function startCarouselTimer() {
+      clearInterval(carouselTimer);
+      carouselTimer=setInterval(function(){
+        var pinned=getPinnedPosts();
+        goToSlide((carouselIndex+1)%pinned.length);
+      },CAROUSEL_INTERVAL_MS);
+    }
+
+    function resetCarouselTimer() { startCarouselTimer(); }
+
+    function startProgressBar() {
+      cancelAnimationFrame(carouselProgressFrame);
+      var fill=document.getElementById("carouselProgressFill");
+      fill.style.transition="none"; fill.style.width="0%";
+      var start=performance.now();
+      function tick(now) {
+        var pct=Math.min(100,(now-start)/CAROUSEL_INTERVAL_MS*100);
+        fill.style.transition="none"; fill.style.width=pct+"%";
+        if(pct<100){carouselProgressFrame=requestAnimationFrame(tick);}
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function wireCarouselSwipe() {
+      var outer=document.getElementById("carouselOuter");
+      outer.addEventListener("pointerdown",function(e){carouselDragStartX=e.clientX;carouselDragging=true;});
+      outer.addEventListener("pointerup",function(e){
+        if(!carouselDragging){return;}
+        carouselDragging=false;
+        var diff=e.clientX-carouselDragStartX;
+        var pinned=getPinnedPosts();
+        if(Math.abs(diff)>40){
+          goToSlide(diff<0?(carouselIndex+1)%pinned.length:(carouselIndex-1+pinned.length)%pinned.length);
+          resetCarouselTimer();
+        }
+      });
+      outer.addEventListener("pointercancel",function(){carouselDragging=false;});
+    }
+
+    // ── FILTER ────────────────────────────────────────────────────
+    function isFiltered(){return activeSearch||activeCategory;}
+
+    function matchesFilters(p) {
+      if(activeCategory&&p["Category"]!==activeCategory){return false;}
+      if(activeSearch){
+        var q=activeSearch.toLowerCase();
+        var inHeadline=(p["Headline"]||"").toLowerCase().indexOf(q)!==-1;
+        var inSummary=(p["Summary"]||"").toLowerCase().indexOf(q)!==-1;
+        var inBody=(p["Body"]||"").toLowerCase().indexOf(q)!==-1;
+        var inAuthor=(p["Posted By"]||"").toLowerCase().indexOf(q)!==-1;
+        if(!inHeadline&&!inSummary&&!inBody&&!inAuthor){return false;}
+      }
+      return true;
+    }
+
+    function getSorted(posts) {
+      var filtered=posts.filter(matchesFilters);
+      filtered.sort(function(a,b){
+        if(activeSort==="expiring"){
+          var dA=parseDate(a["Expiration Date"])||new Date(9999,0,1);
+          var dB=parseDate(b["Expiration Date"])||new Date(9999,0,1);
+          return dA-dB;
+        }
+        var dA=parseDate(a["Submission Date"])||new Date(0);
+        var dB=parseDate(b["Submission Date"])||new Date(0);
+        return dB-dA;
+      });
+      return filtered;
+    }
+
+    // ── RENDER ────────────────────────────────────────────────────
+    function render() {
+      postList.innerHTML=""; postGrid.innerHTML="";
+      emptyState.style.display="none";
+
+      // Hide pinned from main feed (they're in carousel)
+      var feedPosts=allPosts.filter(function(p){return (p["Pinned"]||"").toUpperCase()!=="TRUE";});
+      var filtered=getSorted(feedPosts);
+
+      resultCount.textContent=filtered.length+" post"+(filtered.length!==1?"s":"");
+
+      if(!filtered.length){emptyState.style.display="block";return;}
+
+      for(var i=0;i<filtered.length;i++){
+        if(currentView==="list"){postList.appendChild(buildListItem(filtered[i]));}
+        else{postGrid.appendChild(buildCard(filtered[i]));}
+      }
+
+      postList.style.display=currentView==="list"?"flex":"none";
+      postGrid.style.display=currentView==="grid"?"grid":"none";
+    }
+
+    function buildListItem(p) {
+      var item=document.createElement("div");
+      item.className="post-list-item";
+      var hasThumb=p["Thumbnail URL"]&&p["Thumbnail URL"].trim();
+      var summary=truncate(p["Summary"],TRUNCATE_CHARS);
+      var hasMore=(p["Summary"]||"").length>TRUNCATE_CHARS||p["Body"];
+      var eyebrow=catBadgeHtml(p["Category"]);
+      if((p["Priority"]||"").toLowerCase()==="high"){eyebrow+=' <span class="priority-badge">High Priority</span>';}
+      var days=daysUntilExpiry(p["Expiration Date"]);
+      var expiryNote=days!==null&&days<=3?'<span style="color:var(--orange);font-family:IBM Plex Mono,monospace;font-size:10px;margin-left:8px;">Expires in '+days+' day'+(days===1?"":"s")+'</span>':"";
+
+      item.innerHTML=(hasThumb?'<img class="post-list-thumb" src="'+p["Thumbnail URL"]+'" alt="'+(p["Image Alt Text"]||"")+'" loading="lazy">':'')+
+        '<div class="post-list-body">'+
+          '<div class="post-list-eyebrow">'+eyebrow+'</div>'+
+          '<div class="post-list-headline">'+p["Headline"]+'</div>'+
+          '<div class="post-list-summary">'+summary+(hasMore?'<span class="more-link"> &hellip;more</span>':'')+'</div>'+
+          '<div class="post-list-meta">'+p["Posted By"]+" &middot; "+formatDate(p["Submission Date"])+expiryNote+'</div>'+
+        '</div>'+
+        '<span class="list-arrow">&#8250;</span>';
+
+      item.addEventListener("click",function(post){return function(){openModal(post);};}(p));
+      return item;
+    }
+
+    function buildCard(p) {
+      var card=document.createElement("div");
+      var catCls=catClass(p["Category"]);
+      card.className="post-card "+catCls;
+      var hasThumb=p["Thumbnail URL"]&&p["Thumbnail URL"].trim();
+      var summary=truncate(p["Summary"],TRUNCATE_CHARS);
+      var hasMore=(p["Summary"]||"").length>TRUNCATE_CHARS||p["Body"];
+      var eyebrow=catBadgeHtml(p["Category"]);
+      if((p["Priority"]||"").toLowerCase()==="high"){eyebrow+=' <span class="priority-badge">High Priority</span>';}
+
+      card.innerHTML=(hasThumb?'<img class="post-card-thumb" src="'+p["Thumbnail URL"]+'" alt="'+(p["Image Alt Text"]||"")+'" loading="lazy">':'')+
+        '<div class="post-card-body">'+
+          '<div class="post-card-eyebrow">'+eyebrow+'</div>'+
+          '<div class="post-card-headline">'+p["Headline"]+'</div>'+
+          '<div class="post-card-summary">'+summary+(hasMore?'<span class="more-link"> &hellip;more</span>':'')+'</div>'+
+          '<div class="post-card-meta">'+p["Posted By"]+" &middot; "+formatDate(p["Submission Date"])+'</div>'+
+        '</div>';
+
+      card.addEventListener("click",function(post){return function(){openModal(post);};}(p));
+      return card;
+    }
+
+    // ── ARCHIVE ───────────────────────────────────────────────────
+    function renderArchive() {
+      if(!archivedPosts.length){archiveToggle.style.display="none";return;}
+      archiveToggle.style.display="flex";
+      archiveCount.textContent=archivedPosts.length;
+      archiveList.innerHTML="";
+      var sorted=archivedPosts.slice().sort(function(a,b){
+        var dA=parseDate(a["Expiration Date"])||new Date(0);
+        var dB=parseDate(b["Expiration Date"])||new Date(0);
+        return dB-dA;
+      });
+      for(var i=0;i<sorted.length;i++){
+        var p=sorted[i];
+        var item=document.createElement("div");
+        item.className="archive-item";
+        item.innerHTML='<span class="cat-badge '+catClass(p["Category"])+'">'+p["Category"]+'</span>'+
+          '<span class="archive-item-headline">'+p["Headline"]+'</span>'+
+          '<span class="archive-item-date">Expired '+formatDate(p["Expiration Date"])+'</span>';
+        item.addEventListener("click",function(post){return function(){openModal(post);};}(p));
+        archiveList.appendChild(item);
+      }
+    }
+
+    archiveToggle.addEventListener("click",function(){
+      archiveToggle.classList.toggle("open");
+      archiveList.classList.toggle("open");
+    });
+
+    // ── MODAL ─────────────────────────────────────────────────────
+    var overlay       = document.getElementById("modalOverlay");
+    var modalThumb    = document.getElementById("modalThumb");
+    var modalEyebrow  = document.getElementById("modalEyebrow");
+    var modalHeadline = document.getElementById("modalHeadline");
+    var modalEventInfo= document.getElementById("modalEventInfo");
+    var modalSummary  = document.getElementById("modalSummary");
+    var modalBodyDiv  = document.getElementById("modalBodyDivider");
+    var modalBodyText = document.getElementById("modalBodyText");
+    var modalFooter   = document.getElementById("modalFooter");
+    var modalClose    = document.getElementById("modalClose");
+
+    function openModal(p) {
+      // Thumb
+      if(p["Thumbnail URL"]&&p["Thumbnail URL"].trim()){
+        modalThumb.src=p["Thumbnail URL"];
+        modalThumb.alt=p["Image Alt Text"]||p["Headline"];
+        modalThumb.style.display="block";
+      } else { modalThumb.style.display="none"; }
+
+      // Eyebrow
+      var eyebrow=catBadgeHtml(p["Category"]);
+      if((p["Priority"]||"").toLowerCase()==="high"){eyebrow+=' <span class="priority-badge">High Priority</span>';}
+      var days=daysUntilExpiry(p["Expiration Date"]);
+      if(days!==null&&days<=3&&days>=0){eyebrow+=' <span style="color:var(--orange);font-family:IBM Plex Mono,monospace;font-size:10px;">Expires in '+days+' day'+(days===1?"":"s")+'</span>';}
+      modalEyebrow.innerHTML=eyebrow;
+
+      modalHeadline.textContent=p["Headline"];
+
+      // Event info
+      if(p["Category"]==="Event"&&(p["Event Date"]||p["Event Time"]||p["Event Location"])){
+        modalEventInfo.style.display="flex";
+        var fields="";
+        if(p["Event Date"]){fields+='<div class="modal-event-field"><div class="modal-event-label">Date</div><div class="modal-event-value">'+formatDate(p["Event Date"])+'</div></div>';}
+        if(p["Event Time"]){fields+='<div class="modal-event-field"><div class="modal-event-label">Time</div><div class="modal-event-value">'+p["Event Time"]+'</div></div>';}
+        if(p["Event Location"]){fields+='<div class="modal-event-field"><div class="modal-event-label">Location</div><div class="modal-event-value">'+p["Event Location"]+'</div></div>';}
+        modalEventInfo.innerHTML=fields;
+      } else { modalEventInfo.style.display="none"; }
+
+      modalSummary.textContent=p["Summary"]||"";
+
+      if(p["Body"]&&p["Body"].trim()){
+        modalBodyDiv.style.display="block";
+        modalBodyText.style.display="block";
+        modalBodyText.textContent=p["Body"];
+      } else {
+        modalBodyDiv.style.display="none";
+        modalBodyText.style.display="none";
+      }
+
+      // Footer
+      var footer="";
+      footer+='<div class="modal-meta-row">Posted by '+p["Posted By"]+" &middot; "+formatDate(p["Submission Date"])+"<br>Expires "+formatDate(p["Expiration Date"]);
+      if(p["Audience"]&&p["Audience"].trim()){footer+=" &middot; "+p["Audience"];}
+      footer+='</div>';
+      if(p["Contact Email"]&&p["Contact Email"].trim()){
+        footer+='<a class="modal-contact" href="mailto:'+p["Contact Email"]+'"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="1" y="4" width="14" height="9" rx="1"/><path d="M1 4l7 5 7-5"/></svg>Contact</a>';
+      }
+      if(p["URL"]&&p["URL"].trim()){
+        var ctaLabel=p["Call to Action Label"]&&p["Call to Action Label"].trim()?p["Call to Action Label"]:"Learn More";
+        footer+='<a class="modal-cta-btn" href="'+p["URL"]+'" target="_blank" rel="noopener"><svg viewBox="0 0 16 16"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9M9 1h6m0 0v6M15 1L7 9"/></svg>'+ctaLabel+'</a>';
+      }
+      modalFooter.innerHTML=footer;
+
+      overlay.classList.add("open");
+      document.body.style.overflow="hidden";
+    }
+
+    function closeModal(){overlay.classList.remove("open");document.body.style.overflow="";}
+    modalClose.addEventListener("click",closeModal);
+    overlay.addEventListener("click",function(e){if(e.target===overlay){closeModal();}});
+    document.addEventListener("keydown",function(e){if(e.key==="Escape"){closeModal();}});
+
+    // ── CONTROLS ──────────────────────────────────────────────────
+    function updateClearBtn(){clearBtn.classList.toggle("visible",!!(activeSearch||activeCategory));}
+
+    function clearFilters(){
+      activeSearch=""; activeCategory="";
+      document.getElementById("searchInput").value="";
+      document.getElementById("categoryFilter").value="";
+      document.getElementById("categoryFilter").className="filter-select";
+      updateClearBtn(); render();
+    }
+
+    clearBtn.addEventListener("click",clearFilters);
+
+    document.getElementById("searchInput").addEventListener("input",function(){
+      activeSearch=this.value.trim(); updateClearBtn(); render();
+    });
+
+    document.getElementById("categoryFilter").addEventListener("change",function(){
+      activeCategory=this.value;
+      this.className="filter-select"+(this.value?" active":"");
+      updateClearBtn(); render();
+    });
+
+    document.getElementById("sortSelect").addEventListener("change",function(){
+      activeSort=this.value; render();
+    });
+
+    document.getElementById("btnList").addEventListener("click",function(){
+      currentView="list";
+      this.classList.add("active");
+      document.getElementById("btnGrid").classList.remove("active");
+      render();
+    });
+
+    document.getElementById("btnGrid").addEventListener("click",function(){
+      currentView="grid";
+      this.classList.add("active");
+      document.getElementById("btnList").classList.remove("active");
+      render();
+    });
+
+    // ── NAV ───────────────────────────────────────────────────────
+    (function(){
+      var nav=document.getElementById("belmontNav"), toggle=document.getElementById("belmontNavToggle");
+      var current=nav.getAttribute("data-current"), links=nav.querySelectorAll(".belmont-nav-link");
+      for(var i=0;i<links.length;i++){if(links[i].getAttribute("data-page")===current){links[i].classList.add("is-current");}}
+      toggle.addEventListener("click",function(e){e.stopPropagation();var o=nav.classList.toggle("open");toggle.setAttribute("aria-expanded",o?"true":"false");});
+      document.addEventListener("click",function(e){if(!nav.contains(e.target)){nav.classList.remove("open");toggle.setAttribute("aria-expanded","false");}});
+      document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!overlay.classList.contains("open")){nav.classList.remove("open");toggle.setAttribute("aria-expanded","false");}});
+    })();
+  </script>
+
+</body>
+</html>
