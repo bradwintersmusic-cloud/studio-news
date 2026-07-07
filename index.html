@@ -43,6 +43,8 @@
       line-height: 1.5;
       padding: 48px 28px 100px;
       overflow-x: hidden;
+      position: relative;
+      z-index: 1;
     }
 
     @media (min-width: 1200px) { html { zoom: 1.085; } }
@@ -848,8 +850,8 @@
     // ══════════════════════════════════════════════════════════════
     // CONFIGURATION
     // ══════════════════════════════════════════════════════════════
-    var SHEET_CSV_URL  = "YOUR_GOOGLE_SHEET_CSV_URL_HERE";
-    var TALLY_FORM_URL = "YOUR_TALLY_FORM_URL_HERE";
+    var SHEET_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSg5x2WOktJYUHw1NodUdeYc4JCOLVUiy5ySIBarRWf_XX-3KMbNbrMDVuqmVtGPtHoMiXErzsORWru/pub?output=csv";
+    var TALLY_FORM_URL = "https://tally.so/r/5B5Mo6";
     var TRUNCATE_CHARS = 200;
     var CAROUSEL_INTERVAL_MS = 3500;
 
