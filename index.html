@@ -701,7 +701,9 @@
 
   <div class="belmont-nav" id="belmontNav" data-current="news">
     <button class="belmont-nav-toggle" id="belmontNavToggle" aria-label="Open navigation" aria-expanded="false">
-      <svg viewBox="0 0 16 16"><rect x="2" y="4" width="12" height="1.6" rx="0.8"/><rect x="2" y="7.2" width="12" height="1.6" rx="0.8"/><rect x="2" y="10.4" width="12" height="1.6" rx="0.8"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 11l19-9-9 19-2-8-8-2z"/>
+      </svg>
     </button>
     <nav class="belmont-nav-menu">
       <a class="belmont-nav-link" data-page="home" href="https://bradwintersmusic-cloud.github.io/studio-home/">
@@ -765,6 +767,7 @@
 
       <select class="filter-select" id="sortSelect">
         <option value="recent">Most Recent</option>
+        <option value="oldest">Oldest First</option>
         <option value="expiring">Expiring Soon</option>
       </select>
 
@@ -1124,13 +1127,18 @@
       var filtered=posts.filter(matchesFilters);
       filtered.sort(function(a,b){
         if(activeSort==="expiring"){
-          var dA=parseDate(a["Expiration Date"])||new Date(9999,0,1);
-          var dB=parseDate(b["Expiration Date"])||new Date(9999,0,1);
-          return dA-dB;
-        }
-        var dA=parseDate(a["Submission Date"])||new Date(0);
-        var dB=parseDate(b["Submission Date"])||new Date(0);
-        return dB-dA;
+      var dA=parseDate(a["Expiration Date"])||new Date(9999,0,1);
+      var dB=parseDate(b["Expiration Date"])||new Date(9999,0,1);
+      return dA-dB;
+    }
+        if(activeSort==="oldest"){
+      var dA=parseDate(a["Submission Date"])||new Date(0);
+      var dB=parseDate(b["Submission Date"])||new Date(0);
+      return dA-dB;
+    }
+      var dA=parseDate(a["Submission Date"])||new Date(0);
+      var dB=parseDate(b["Submission Date"])||new Date(0);
+      return dB-dA;
       });
       return filtered;
     }
@@ -1141,8 +1149,19 @@
       emptyState.style.display="none";
 
       // Hide pinned from main feed (they're in carousel)
-      var feedPosts=allPosts.filter(function(p){return (p["Pinned"]||"").toUpperCase()!=="TRUE";});
-      var filtered=getSorted(feedPosts);
+      var carouselWrap = document.getElementById("carouselWrap");
+      var isSearching = !!(activeSearch || activeCategory);
+
+      // When searching, include pinned posts in feed and collapse carousel
+      if(isSearching){
+        carouselWrap.style.display = "none";
+      var feedPosts = allPosts;
+      } else {
+        carouselWrap.style.display = getPinnedPosts().length ? "block" : "none";
+      var feedPosts = allPosts.filter(function(p){ return (p["Pinned"]||"").toUpperCase()!=="TRUE"; });
+      }
+
+      var filtered = getSorted(feedPosts);
 
       resultCount.textContent=filtered.length+" post"+(filtered.length!==1?"s":"");
 
