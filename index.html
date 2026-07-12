@@ -1177,21 +1177,22 @@
     }
 
     function getSorted(posts) {
-      var filtered=posts.filter(matchesFilters);
-      filtered.sort(function(a,b){
-        if(activeSort==="expiring"){
-      var dA=parseDate(a["Expiration Date"])||new Date(9999,0,1);
-      var dB=parseDate(b["Expiration Date"])||new Date(9999,0,1);
-      return dA-dB;
-    }
-        if(activeSort==="oldest"){
-      var dA=parseDate(a["Submission Date"])||new Date(0);
-      var dB=parseDate(b["Submission Date"])||new Date(0);
-      return dA-dB;
-    }
-      var dA=parseDate(a["Submission Date"])||new Date(0);
-      var dB=parseDate(b["Submission Date"])||new Date(0);
-      return dB-dA;
+      var filtered = posts.filter(matchesFilters);
+      filtered.sort(function(a, b) {
+        var dA, dB;
+        if (activeSort === "expiring") {
+          dA = parseDate(a["Expiration Date"]) || new Date(9999, 0, 1);
+          dB = parseDate(b["Expiration Date"]) || new Date(9999, 0, 1);
+          return dA - dB;
+        }
+        if (activeSort === "oldest") {
+          dA = parseDate(a["Submission Date"]) || new Date(0);
+          dB = parseDate(b["Submission Date"]) || new Date(0);
+          return dA - dB;
+        }
+        dA = parseDate(a["Submission Date"]) || new Date(0);
+        dB = parseDate(b["Submission Date"]) || new Date(0);
+        return dB - dA;
       });
       return filtered;
     }
