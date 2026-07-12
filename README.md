@@ -1,4 +1,5 @@
 # studio-news
+
 # AET News — Belmont AET
 
 **Live URL:** https://bradwintersmusic-cloud.github.io/studio-news/
@@ -49,41 +50,41 @@ To publish: Google Sheets → File → Share → Publish to web → select sheet
 
 Must match exactly (case-sensitive):
 
-| Column | Required | Notes |
-|---|---|---|
-| Submission Date | Auto | Written by Tally |
-| Status | Yes | Pending or Published |
-| Category | Yes | News, Announcement, Event, Opportunity, Alert, Emergency, Other |
-| Priority | No | Normal or High |
-| Headline | Yes | One sentence, displayed large |
-| Summary | Yes | Truncated to 200 chars on card |
-| Body | No | Full text, modal only |
-| Thumbnail URL | No | Dropbox `raw=1` link via Make automation |
-| Image Alt Text | No | Accessibility description for thumbnail |
-| Event Date | No | Relevant for Event category |
-| Event Time | No | e.g. "7:00 PM – 9:00 PM" |
-| Event Location | No | |
-| Expiration Date | Yes | Post archives automatically after this date |
-| Contact Email | No | Shown as contact button in modal |
-| URL | No | External link |
-| Call to Action Label | No | Button text for URL (default: "Learn More") |
-| Posted By | Yes | Name and department |
-| Audience | No | Metadata only, not filtered on page |
-| Pinned | Manual | TRUE = appears in carousel |
+| Column               | Required | Notes                                                           |
+| -------------------- | -------- | --------------------------------------------------------------- |
+| Submitted at         | Auto     | Written by Tally                                                |
+| Status               | Yes      | Pending or Published                                            |
+| Category             | Yes      | News, Announcement, Event, Opportunity, Alert, Emergency, Other |
+| Priority             | No       | Normal or High                                                  |
+| Headline             | Yes      | One sentence, displayed large                                   |
+| Summary              | Yes      | Truncated to 200 chars on card                                  |
+| Body                 | No       | Full text, modal only                                           |
+| Thumbnail URL        | No       | Dropbox `raw=1` link via Make automation                        |
+| Image Alt Text       | No       | Accessibility description for thumbnail                         |
+| Event Date           | No       | Relevant for Event category                                     |
+| Event Time           | No       | e.g. "7:00 PM – 9:00 PM"                                        |
+| Event Location       | No       |                                                                 |
+| Expiration Date      | Yes      | Post archives automatically after this date                     |
+| Contact Email        | No       | Shown as contact button in modal                                |
+| URL                  | No       | External link                                                   |
+| Call to Action Label | No       | Button text for URL (default: "Learn More")                     |
+| Posted By            | Yes      | Name and department                                             |
+| Audience             | No       | Metadata only, not filtered on page                             |
+| Pinned               | Manual   | TRUE = appears in carousel                                      |
 
 ---
 
 ## Category Visual Treatment
 
-| Category | Color | Notes |
-|---|---|---|
-| News | Gold | Default AET brand color |
-| Announcement | Gold | Same as News |
-| Event | Blue | Shows date/time/location strip in modal |
-| Opportunity | Green | |
-| Alert | Orange | |
-| Emergency | Red | Appears in emergency banner only, not main feed |
-| Other | Grey | |
+| Category     | Color  | Notes                                           |
+| ------------ | ------ | ----------------------------------------------- |
+| News         | Gold   | Default AET brand color                         |
+| Announcement | Gold   | Same as News                                    |
+| Event        | Blue   | Shows date/time/location strip in modal         |
+| Opportunity  | Green  |                                                 |
+| Alert        | Orange |                                                 |
+| Emergency    | Red    | Appears in emergency banner only, not main feed |
+| Other        | Grey   |                                                 |
 
 ---
 

@@ -1103,7 +1103,7 @@
           '<div class="carousel-card-headline">'+p["Headline"]+'</div>'+
           '<div class="carousel-card-summary">'+truncate(p["Summary"],TRUNCATE_CHARS)+'</div>'+
           '<div class="carousel-card-footer">'+
-            '<span class="carousel-card-meta">'+p["Posted By"]+" &middot; "+formatDate(p["Submission Date"])+'</span>'+
+            '<span class="carousel-card-meta">'+p["Posted By"]+" &middot; "+formatDate(p["Submitted at"])+'</span>'+
             expiryNote+
           '</div>'+
         '</div>';
@@ -1186,12 +1186,12 @@
           return dA - dB;
         }
         if (activeSort === "oldest") {
-          dA = parseDate(a["Submission Date"]) || new Date(0);
-          dB = parseDate(b["Submission Date"]) || new Date(0);
+          dA = parseDate(a["Submitted at"]) || new Date(0);
+          dB = parseDate(b["Submitted at"]) || new Date(0);
           return dA - dB;
         }
-        dA = parseDate(a["Submission Date"]) || new Date(0);
-        dB = parseDate(b["Submission Date"]) || new Date(0);
+        dA = parseDate(a["Submitted at"]) || new Date(0);
+        dB = parseDate(b["Submitted at"]) || new Date(0);
         return dB - dA;
       });
       return filtered;
@@ -1246,7 +1246,7 @@
           '<div class="post-list-eyebrow">'+eyebrow+'</div>'+
           '<div class="post-list-headline">'+p["Headline"]+'</div>'+
           '<div class="post-list-summary">'+summary+(hasMore?'<span class="more-link"> &hellip;more</span>':'')+'</div>'+
-          '<div class="post-list-meta">'+p["Posted By"]+" &middot; "+formatDate(p["Submission Date"])+expiryNote+'</div>'+
+          '<div class="post-list-meta">'+p["Posted By"]+" &middot; "+formatDate(p["Submitted at"])+expiryNote+'</div>'+
         '</div>'+
         '<span class="list-arrow">&#8250;</span>';
 
@@ -1269,7 +1269,7 @@
           '<div class="post-card-eyebrow">'+eyebrow+'</div>'+
           '<div class="post-card-headline">'+p["Headline"]+'</div>'+
           '<div class="post-card-summary">'+summary+(hasMore?'<span class="more-link"> &hellip;more</span>':'')+'</div>'+
-          '<div class="post-card-meta">'+p["Posted By"]+" &middot; "+formatDate(p["Submission Date"])+'</div>'+
+          '<div class="post-card-meta">'+p["Posted By"]+" &middot; "+formatDate(p["Submitted at"])+'</div>'+
         '</div>';
 
       card.addEventListener("click",function(post){return function(){openModal(post);};}(p));
@@ -1356,7 +1356,7 @@
 
       // Footer
       var footer="";
-      footer+='<div class="modal-meta-row">Posted by '+p["Posted By"]+" &middot; "+formatDate(p["Submission Date"])+"<br>Expires "+formatDate(p["Expiration Date"]);
+      footer+='<div class="modal-meta-row">Posted by '+p["Posted By"]+" &middot; "+formatDate(p["Submitted at"])+"<br>Expires "+formatDate(p["Expiration Date"]);
       if(p["Audience"]&&p["Audience"].trim()){footer+=" &middot; "+p["Audience"];}
       footer+='</div>';
       if(p["Contact Email"]&&p["Contact Email"].trim()){
