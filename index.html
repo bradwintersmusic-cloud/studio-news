@@ -839,7 +839,7 @@
 
       <select class="filter-select" id="sortSelect">
         <option value="recent">Most Recent</option>
-        <option value="oldest">Oldest First</option>
+        <option value="oldest">Oldest</option>
         <option value="expiring">Expiring Soon</option>
       </select>
 
@@ -887,7 +887,7 @@
     </div>
 
     <!-- Feed -->
-    <div class="section-heading" id="feedHeading"><div class="dot"></div>Latest</div>
+    <div class="section-heading" id="feedHeading"><div class="dot"></div>Most Recent</div>
     <div class="empty-state" id="emptyState">No posts match your filters.</div>
     <div class="post-list" id="postList"></div>
     <div class="post-grid" id="postGrid"></div>
@@ -1419,8 +1419,16 @@
       updateClearBtn(); render();
     });
 
-    document.getElementById("sortSelect").addEventListener("change",function(){
-      activeSort=this.value; render();
+    document.getElementById("sortSelect").addEventListener("change", function() {
+      activeSort = this.value;
+      var labels = {
+        "recent": "Most Recent",
+        "oldest": "Oldest",
+        "expiring": "Expiring Soon"
+      };
+      document.getElementById("feedHeading").innerHTML =
+        '<div class="dot"></div>' + labels[this.value];
+      render();
     });
 
     document.getElementById("btnList").addEventListener("click",function(){
